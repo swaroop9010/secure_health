@@ -1,39 +1,50 @@
 import mysql.connector
 
 def query_data(user_group):
+    """
+    Retrieve data from the `health_info` table based on the user's group.
+    Group 'H' can access all fields, while Group 'R' cannot see first_name and last_name.
+    """
     conn = mysql.connector.connect(
         host="localhost",
-        user="root",
-        password="Homesh@99",
+        user="root",  # Replace with your MySQL username
+        password="Homesh@99",  # Replace with your MySQL password
         database="secure_health_db"
     )
     cursor = conn.cursor()
 
-    if user_group == "H":
-        cursor.execute("SELECT * FROM health_info")
-    else:
-        cursor.execute("SELECT age, gender, weight, height, health_history FROM health_info")
-    
+    if user_group == 'H':
+        # Group H can access all fields
+        cursor.execute("SELECT id, first_name, last_name, gender, age, weight, height, health_history FROM health_info")
+    elif user_group == 'R':
+        # Group R cannot access first_name and last_name
+        cursor.execute("SELECT id, gender, age, weight, height, health_history FROM health_info")
+
     data = cursor.fetchall()
     conn.close()
     return data
 
-def update_health_record(record_id, field, new_value):
+def add_data(record_id, new_health_history):
+    """
+    Update the `health_history` field of a specific record in the `health_info` table.
+    Only accessible by users from Group 'H'.
+    """
     conn = mysql.connector.connect(
         host="localhost",
-        user="root",
-        password="Homesh@99",
+        user="root",  # Replace with your MySQL username
+        password="Homesh@99",  # Replace with your MySQL password
         database="secure_health_db"
     )
     cursor = conn.cursor()
 
-    # Ensure only allowed fields are updated
-    allowed_fields = {"first_name", "last_name", "gender", "age", "weight", "height", "health_history"}
-    if field in allowed_fields:
-        cursor.execute(f"UPDATE health_info SET {field} = %s WHERE id = %s", (new_value, record_id))
-        conn.commit()
-        print(f"Record {record_id} updated successfully.")
-    else:
-        print("Invalid field specified.")
-    
+    # Update the health history for a specific record by record_id
+    cursor.execute("""
+    UPDATE health_info
+    SET health_history = %s
+    WHERE id = %s
+    """, (new_health_history, record_id))
+
+    conn.commit()
+    cursor.close()
     conn.close()
+    print(f"Record {record_id} updated successfully.")
