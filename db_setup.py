@@ -42,9 +42,7 @@ def initialize_database():
             INSERT INTO health_info (first_name, last_name, gender, age, weight, height, health_history) 
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, [
-            ('John', 'Smith', 1, 35, 75.5, 180.5, 'No significant medical history'),
-            ('Jane', 'Johnson', 0, 28, 62.3, 165.4, 'Allergic to penicillin'),
-            # Add up to 100 entries with similar structure
+            ('John', 'Smith', 1, 35, 75.5, 180.5, 'No significant medical history')
         ])
         
         conn.commit()
