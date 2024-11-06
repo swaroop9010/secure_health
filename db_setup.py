@@ -10,7 +10,17 @@ def initialize_database():
     )
     cursor = conn.cursor()
 
-    # Create `health_info` table
+    # Create `users` table for authentication if it doesn't exist
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) UNIQUE,
+        password VARBINARY(255),
+        user_group ENUM('H', 'R') NOT NULL
+    );
+    """)
+
+    # Create `health_info` table if it doesn't exist
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS health_info (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -24,7 +34,7 @@ def initialize_database():
     );
     """)
 
-    # List of sample first and last names
+    # Insert 100 random meaningful records into `health_info`
     first_names = [
         'John', 'Jane', 'Michael', 'Emily', 'James', 'Olivia', 'William', 'Sophia', 
         'Henry', 'Isabella', 'Alexander', 'Mia', 'Daniel', 'Charlotte', 'Matthew', 
@@ -42,8 +52,6 @@ def initialize_database():
         'Adams', 'Nelson', 'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 
         'Carter', 'Roberts', 'Gomez', 'Phillips', 'Evans'
     ]
-    
-    # List of sample health histories
     health_histories = [
         'No significant medical history', 'History of asthma', 'Allergic to penicillin', 
         'History of high blood pressure', 'Diabetic', 'History of migraines', 
@@ -52,7 +60,6 @@ def initialize_database():
         'Vegetarian', 'Pregnant', 'History of anemia', 'History of depression'
     ]
 
-    # Insert 100 random meaningful records into `health_info`
     for _ in range(100):
         first_name = random.choice(first_names)
         last_name = random.choice(last_names)
