@@ -37,16 +37,20 @@ def initialize_database():
             )
         """)
         
-        # Insert sample health data (example: only 5 entries shown)
+        # Insert sample health data
         cursor.executemany("""
             INSERT INTO health_info (first_name, last_name, gender, age, weight, height, health_history) 
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, [
-            ('John', 'Smith', 1, 35, 75.5, 180.5, 'No significant medical history')
+            ('John', 'Smith', 1, 35, 75.5, 180.5, 'No significant medical history'),
+            ('Jane', 'Doe', 0, 28, 62.3, 165.2, 'Mild allergies'),
+            ('Alice', 'Brown', 0, 42, 68.0, 170.0, 'Diabetes type 2'),
+            ('Bob', 'Johnson', 1, 50, 80.0, 175.0, 'Hypertension'),
+            ('Carol', 'Davis', 0, 33, 55.0, 160.0, 'Asthma')
         ])
         
         conn.commit()
-        print("Database initialized with 100 random records.")
+        print("Database initialized with sample records.")
         
     except mysql.connector.Error as err:
         print(f"Error: {err}")
